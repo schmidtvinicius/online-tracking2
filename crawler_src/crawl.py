@@ -2,11 +2,12 @@ import sys
 from playwright.sync_api import sync_playwright, Playwright
 
 def main(playwright: Playwright, block_trackers=False) -> None:
+    crawl_data_dir = 'crawl_data_block' if block_trackers else 'crawl_data_allow'
     chromium = playwright.chromium # or "firefox" or "webkit".
     browser = chromium.launch(headless=False)
     page = browser.new_page()
     page.goto('https://playwright.dev/python/docs/api/class-playwright')
-    # page.screenshot(path='test.png')
+    page.screenshot(path=crawl_data_dir+'test')
     # other actions...
     browser.close()
 
