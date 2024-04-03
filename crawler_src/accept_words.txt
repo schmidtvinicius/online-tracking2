@@ -1,0 +1,114 @@
+accept
+accept & close
+accept & continue
+accept & proceed
+accept all
+accept all cookies
+accept all settings
+accept and close
+accept and continue
+accept and continue to site
+accept cookies
+accept our policy
+accept recommended cookies
+agree
+agree & close
+agree & continue
+agree & exit
+agree all
+agree and close
+agree and continue
+agree and proceed
+allow
+allow all
+allow all cookies
+allow cookies
+allows cookies
+confirm
+consent
+enable all
+enable all cookies
+got it
+got it, thanks
+happy to accept cookies
+i accept
+i accept all
+i accept all cookies
+i accept cookies
+i accept cookies from this site
+i agree
+i agree/consent to its terms
+i am ok with this
+i consent
+i consent to cookies
+i understand
+i'm fine with this
+i'm ok with analytics cookies
+i'm ok with that
+i'm ok with this
+ok, accept all
+ok
+save and close
+yes agreed
+yes, continue
+yes, i accept
+yes, i agree
+yes, i'm happy
+yes, i’m happy
+accepteren
+accepteren & sluiten
+accepteren & doorgaan
+accepteren & doorgaan
+alles accepteren
+alle cookies accepteren
+alle instellingen accepteren
+accepteren en sluiten
+accepteren en doorgaan
+accepteren en doorgaan naar site
+cookies accepteren
+ons beleid accepteren
+aanbevolen cookies accepteren
+akkoord
+akkoord & sluiten
+akkoord & doorgaan
+akkoord & afsluiten
+alles accepteren
+akkoord en sluiten
+akkoord en doorgaan
+akkoord en doorgaan
+toestaan
+alles toestaan
+alle cookies toestaan
+cookies toestaan
+cookies toestaan
+bevestigen
+toestemming
+alles inschakelen
+alle cookies toestaan
+gekregen
+Begrepen, bedankt
+accepteer graag cookies
+ik accepteer
+ik accepteer alle
+ik accepteer alle cookies
+ik accepteer cookies
+ik accepteer cookies van deze site
+ik ga akkoord
+ik ga akkoord met de voorwaarden
+ik ga hiermee akkoord
+ik geef toestemming
+ik geef toestemming voor cookies
+ik begrijp
+ik vind dit goed
+ik ben ok met analytische cookies
+ik vind het goed
+ik vind dit goed
+ok, alles accepteren
+ok
+opslaan en sluiten
+ja akkoord
+ja, doorgaan
+ja, ik accepteer
+ja, ik ga akkoord
+ja, ik ben tevreden
+ja, ik ben blij
