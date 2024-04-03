@@ -1,60 +1,3 @@
-accept
-accept & close
-accept & continue
-accept & proceed
-accept all
-accept all cookies
-accept all settings
-accept and close
-accept and continue
-accept and continue to site
-accept cookies
-accept our policy
-accept recommended cookies
-agree
-agree & close
-agree & continue
-agree & exit
-agree all
-agree and close
-agree and continue
-agree and proceed
-allow
-allow all
-allow all cookies
-allow cookies
-allows cookies
-confirm
-consent
-enable all
-enable all cookies
-got it
-got it, thanks
-happy to accept cookies
-i accept
-i accept all
-i accept all cookies
-i accept cookies
-i accept cookies from this site
-i agree
-i agree/consent to its terms
-i am ok with this
-i consent
-i consent to cookies
-i understand
-i'm fine with this
-i'm ok with analytics cookies
-i'm ok with that
-i'm ok with this
-ok, accept all
-ok
-save and close
-yes agreed
-yes, continue
-yes, i accept
-yes, i agree
-yes, i'm happy
-yes, i’m happy
 accepteren
 accepteren & sluiten
 accepteren & doorgaan
@@ -112,3 +55,60 @@ ja, ik accepteer
 ja, ik ga akkoord
 ja, ik ben tevreden
 ja, ik ben blij
+accept
+accept & close
+accept & continue
+accept & proceed
+accept all
+accept all cookies
+accept all settings
+accept and close
+accept and continue
+accept and continue to site
+accept cookies
+accept our policy
+accept recommended cookies
+agree
+agree & close
+agree & continue
+agree & exit
+agree all
+agree and close
+agree and continue
+agree and proceed
+allow
+allow all
+allow all cookies
+allow cookies
+allows cookies
+confirm
+consent
+enable all
+enable all cookies
+got it
+got it, thanks
+happy to accept cookies
+i accept
+i accept all
+i accept all cookies
+i accept cookies
+i accept cookies from this site
+i agree
+i agree/consent to its terms
+i am ok with this
+i consent
+i consent to cookies
+i understand
+i'm fine with this
+i'm ok with analytics cookies
+i'm ok with that
+i'm ok with this
+ok, accept all
+ok
+save and close
+yes agreed
+yes, continue
+yes, i accept
+yes, i agree
+yes, i'm happy
+yes, i’m happy
