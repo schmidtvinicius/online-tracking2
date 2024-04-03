@@ -1,9 +1,9 @@
-import os, sys
-from playwright.sync_api import sync_playwright, Playwright, TimeoutError as PlaywrightTimeoutError
+import asyncio, os, sys
+from playwright.sync_api import sync_playwright, Playwright, Mouse, TimeoutError as PlaywrightTimeoutError
 from time import sleep
 from tld import get_fld
 
-def main(playwright: Playwright, options: dict) -> None:
+async def main(playwright: Playwright, options: dict) -> None:
     suffix = '_block' if options['block_trackers'] else '_allow'
     crawl_data_dir = 'crawl_data'+suffix
 
@@ -28,6 +28,7 @@ def main(playwright: Playwright, options: dict) -> None:
             except PlaywrightTimeoutError:
                 continue
         sleep(3)
+        await scroll_in_multiple_steps(page.mouse)
         page.screenshot(path=os.path.join(crawl_data_dir,file_prefix+'_post_consent.png'))
         page.close()
         # Playwright does not allow you to specify the name of the video, so we have to manually rename it
@@ -35,6 +36,10 @@ def main(playwright: Playwright, options: dict) -> None:
         context.close()
         
     browser.close()
+
+
+async def scroll_in_multiple_steps(mouse: Mouse):
+    await mouse.wheel(delta_x=0,delta_y=300)
 
 
 def rename_video(path_to_video: str, new_name: str) -> None:
@@ -66,4 +71,4 @@ def parse_command_line_args(args: list[str]) -> dict:
 if __name__ == '__main__':
     command_line_args = parse_command_line_args(sys.argv)
     with sync_playwright() as playwright:
-        main(playwright=playwright, options=command_line_args)
+        asyncio.run(main(playwright=playwright, options=command_line_args))
