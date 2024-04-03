@@ -3,7 +3,7 @@ from playwright.sync_api import sync_playwright, Playwright
 from time import sleep
 from tld import get_fld
 
-def main(playwright: Playwright, options) -> None:
+def main(playwright: Playwright, options: dict) -> None:
     suffix = '_block' if options['block_trackers'] else '_allow'
     crawl_data_dir = 'crawl_data'+suffix
 
@@ -12,15 +12,30 @@ def main(playwright: Playwright, options) -> None:
     for url in options['urls']:
         fld = get_fld(url)
         file_prefix = fld+suffix
-        page = browser.new_page(
+        context = browser.new_context(
             record_har_path=os.path.join(crawl_data_dir,file_prefix+'.har'),
-            record_video_dir=os.path.join(crawl_data_dir))
+            record_video_dir=crawl_data_dir
+        )
+        page = context.new_page()
         page.goto(url)
         sleep(10)
         page.screenshot(path=os.path.join(crawl_data_dir,file_prefix+'_pre_consent.png'))
         page.close()
+        # Playwright does not allow you to specify the name of the video, so we have to manually rename it
+        rename_video(page.video.path(), file_prefix+'.webm')
+        context.close()
         
     browser.close()
+
+
+def rename_video(path_to_video: str, new_name: str) -> None:
+    new_path = path_to_video.split('/')[:-1]
+    new_path.append(new_name)
+    new_path = '/'.join(new_path)
+    try:
+        os.rename(path_to_video, new_path)
+    except OSError as e:
+        print(f'Failed to rename video with exception: {e.strerror}')
 
 
 def read_file(file_path: str) -> list[str]:
