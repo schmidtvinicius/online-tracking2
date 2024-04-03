@@ -1,5 +1,5 @@
 import os, sys
-from playwright.sync_api import sync_playwright, Playwright
+from playwright.sync_api import sync_playwright, Playwright, TimeoutError as PlaywrightTimeoutError
 from time import sleep
 from tld import get_fld
 
@@ -9,6 +9,7 @@ def main(playwright: Playwright, options: dict) -> None:
 
     chromium = playwright.chromium # or "firefox" or "webkit".
     browser = chromium.launch(headless=False)
+    accept_phrases = read_file('accept_words.txt')
     for url in options['urls']:
         fld = get_fld(url)
         file_prefix = fld+suffix
@@ -20,6 +21,14 @@ def main(playwright: Playwright, options: dict) -> None:
         page.goto(url)
         sleep(10)
         page.screenshot(path=os.path.join(crawl_data_dir,file_prefix+'_pre_consent.png'))
+        for phrase in accept_phrases:
+            try:
+                page.locator(selector="button", has_text=phrase).click(timeout=500)
+                break
+            except PlaywrightTimeoutError:
+                continue
+        sleep(3)
+        page.screenshot(path=os.path.join(crawl_data_dir,file_prefix+'_post_consent.png'))
         page.close()
         # Playwright does not allow you to specify the name of the video, so we have to manually rename it
         rename_video(page.video.path(), file_prefix+'.webm')
