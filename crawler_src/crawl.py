@@ -1,6 +1,6 @@
 import os, random, sys
 import numpy as np
-from playwright.sync_api import sync_playwright, Playwright, Mouse, Page, TimeoutError as PlaywrightTimeoutError
+from playwright.sync_api import sync_playwright, Playwright, Page, TimeoutError as PlaywrightTimeoutError
 from time import sleep
 from tld import get_fld
 
