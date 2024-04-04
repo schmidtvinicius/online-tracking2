@@ -1,4 +1,4 @@
-import os, random, sys
+import os, sys
 import numpy as np
 from playwright.sync_api import sync_playwright, Playwright, Page, TimeoutError as PlaywrightTimeoutError
 from time import sleep
