@@ -23,7 +23,7 @@ async def main(playwright: Playwright, options: dict) -> None:
         page.screenshot(path=os.path.join(crawl_data_dir,file_prefix+'_pre_consent.png'))
         for phrase in accept_phrases:
             try:
-                page.locator(selector="button", has_text=phrase).click(timeout=500)
+                page.locator(selector="button", has_text=phrase).click(timeout=150)
                 break
             except PlaywrightTimeoutError:
                 continue
