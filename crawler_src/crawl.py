@@ -1,9 +1,10 @@
-import asyncio, os, sys
-from playwright.sync_api import sync_playwright, Playwright, Mouse, TimeoutError as PlaywrightTimeoutError
+import os, random, sys
+import numpy as np
+from playwright.sync_api import sync_playwright, Playwright, Mouse, Page, TimeoutError as PlaywrightTimeoutError
 from time import sleep
 from tld import get_fld
 
-async def main(playwright: Playwright, options: dict) -> None:
+def main(playwright: Playwright, options: dict) -> None:
     suffix = '_block' if options['block_trackers'] else '_allow'
     crawl_data_dir = 'crawl_data'+suffix
 
@@ -28,8 +29,9 @@ async def main(playwright: Playwright, options: dict) -> None:
             except PlaywrightTimeoutError:
                 continue
         sleep(3)
-        await scroll_in_multiple_steps(page.mouse)
         page.screenshot(path=os.path.join(crawl_data_dir,file_prefix+'_post_consent.png'))
+        scroll_in_multiple_steps(page)
+        sleep(3)
         page.close()
         # Playwright does not allow you to specify the name of the video, so we have to manually rename it
         rename_video(page.video.path(), file_prefix+'.webm')
@@ -38,8 +40,18 @@ async def main(playwright: Playwright, options: dict) -> None:
     browser.close()
 
 
-async def scroll_in_multiple_steps(mouse: Mouse):
-    await mouse.wheel(delta_x=0,delta_y=300)
+def scroll_in_multiple_steps(page: Page):
+    at_bottom = False
+    current_y_position = page.evaluate('window.scrollY')
+    previous_y_position = current_y_position
+    while not at_bottom:
+        # Using a trackpad, a single swipe scrolls about 1200 pixels
+        scroll_by = 1200 + np.random.randint(low=-100, high=100)
+        page.evaluate(f'window.scrollBy(0,{scroll_by})')
+        sleep(0.5+np.random.rand())
+        current_y_position = page.evaluate('window.scrollY')
+        at_bottom = current_y_position == previous_y_position
+        previous_y_position = current_y_position
 
 
 def rename_video(path_to_video: str, new_name: str) -> None:
@@ -71,4 +83,4 @@ def parse_command_line_args(args: list[str]) -> dict:
 if __name__ == '__main__':
     command_line_args = parse_command_line_args(sys.argv)
     with sync_playwright() as playwright:
-        asyncio.run(main(playwright=playwright, options=command_line_args))
+        main(playwright=playwright, options=command_line_args)
