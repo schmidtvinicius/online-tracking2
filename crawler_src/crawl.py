@@ -1,6 +1,6 @@
-import os, sys
+import os, re, sys
 import numpy as np
-from playwright.sync_api import sync_playwright, Playwright, Page, TimeoutError as PlaywrightTimeoutError
+from playwright.sync_api import sync_playwright, Playwright, Page, TimeoutError as PlaywrightTimeoutError, Route
 from time import sleep
 from tld import get_fld
 
@@ -19,6 +19,7 @@ def main(playwright: Playwright, options: dict) -> None:
             record_video_dir=crawl_data_dir
         )
         page = context.new_page()
+        page.route(re.compile('.*'), is_tracker_domain)
         page.goto(url)
         sleep(10)
         page.screenshot(path=os.path.join(crawl_data_dir,file_prefix+'_pre_consent.png'))
@@ -38,6 +39,11 @@ def main(playwright: Playwright, options: dict) -> None:
         context.close()
         
     browser.close()
+
+
+def is_tracker_domain(route: Route):
+    print(route)
+    route.continue_()
 
 
 def scroll_in_multiple_steps(page: Page):
