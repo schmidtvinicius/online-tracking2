@@ -1,6 +1,6 @@
 import os, re, sys
 import numpy as np
-from playwright.sync_api import sync_playwright, Playwright, Page, TimeoutError as PlaywrightTimeoutError, Route
+from playwright.sync_api import sync_playwright, Playwright, Page, TimeoutError as PlaywrightTimeoutError, Request, Route
 from time import sleep
 from tld import get_fld
 import json
@@ -25,9 +25,8 @@ def main(playwright: Playwright, options: dict) -> None:
         page = context.new_page()
 
         if options['block_trackers']:
-            blocker_trackers(page)
+            page.route('**', lambda route, request: block_tracking_domains(route, request, get_blocked_trackers()))
 
-        page.route(re.compile('.*'), is_tracker_domain)
         page.goto(url)
         sleep(10)
         page.screenshot(path=os.path.join(crawl_data_dir,file_prefix+'_pre_consent.png'))
@@ -55,6 +54,7 @@ def main(playwright: Playwright, options: dict) -> None:
 
 def get_blocked_trackers():
     # Read the JSON file
+    data = None
     with open('tracker_domains.json', 'r') as f:
         data = json.load(f)
     # Create a list of blocked trackers
@@ -63,23 +63,14 @@ def get_blocked_trackers():
     for category in data["categories"]:
         for company in data["categories"][category]:
             domains = list(list(company.values())[0].values())
-            for domain in domains:
-                blocked_trackers.append(domain[0])
+            blocked_trackers += domains[0]
+    blocked_trackers = set(blocked_trackers)
 
     return blocked_trackers
 
 
-def blocker_trackers(page):
-    blocked_urls = get_blocked_trackers()
-    # Set up a route that intercepts all requests
-    page.route('**', lambda route, request: (
-        route.abort() if get_fld(request.url) in blocked_urls else route.continue_()
-    ))
-
-
-def is_tracker_domain(route: Route):
-    print(route)
-    route.continue_()
+def block_tracking_domains(route: Route, request: Request, blocked_urls: list[str]) -> None:
+    route.abort() if get_fld(request.url) in blocked_urls else route.continue_()
 
 
 def scroll_in_multiple_steps(page: Page):
