@@ -13658,8 +13658,7 @@
             "http://zymerget.bid": [
               "flightzy.date",
               "zymerget.bid"
-            ],
-            "performance": "true"
+            ]
           }
         },
         {
@@ -13688,8 +13687,7 @@
           "CoinPot": {
             "http://coinpot.co": [
               "coinpot.co"
-            ],
-            "performance": "true"
+            ]
           }
         },
         {
@@ -13701,8 +13699,7 @@
               "reauthenticator.com",
               "statdynamic.com",
               "webmine.pro"
-            ],
-            "performance": "true"
+            ]
           }
         },
         {
@@ -13717,8 +13714,7 @@
           "Gridcash": {
             "https://www.gridcash.net/": [
               "adless.io"
-            ],
-            "performance": "true"
+            ]
           }
         },
         {
@@ -13730,8 +13726,7 @@
               "hostingcloud.racing",
               "hostingcloud.science",
               "jsecoin.com"
-            ],
-            "performance": "true"
+            ]
           }
         },
         {
@@ -13746,24 +13741,21 @@
               "pampopholf.com",
               "tercabilis.info",
               "tulip18.com"
-            ],
-            "performance": "true"
+            ]
           }
         },
         {
           "Minescripts": {
             "http://minescripts.info": [
               "minescripts.info"
-            ],
-            "performance": "true"
+            ]
           }
         },
         {
           "NeroHut": {
             "https://nerohut.com": [
               "nerohut.com"
-            ],
-            "performance": "true"
+            ]
           }
         },
         {
@@ -13777,8 +13769,7 @@
           "SpareChange": {
             "http://sparechange.io": [
               "sparechange.io"
-            ],
-            "performance": "true"
+            ]
           }
         },
         {
@@ -13800,8 +13791,7 @@
           "WebminePool": {
             "http://webminepool.com": [
               "webminepool.com"
-            ],
-            "performance": "true"
+            ]
           }
         },
         {
