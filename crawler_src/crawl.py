@@ -16,6 +16,7 @@ def main(playwright: Playwright, options: dict) -> None:
     accept_phrases = read_file('accept_words.txt')
 
     for url in options['urls']:
+        print(f'Processing {url}')
         fld = get_fld(url)
         file_prefix = fld+suffix
         context = browser.new_context(
@@ -29,18 +30,32 @@ def main(playwright: Playwright, options: dict) -> None:
 
         page.goto(url)
         sleep(10)
+        # screenshot before accepting cookies
         page.screenshot(path=os.path.join(crawl_data_dir,file_prefix+'_pre_consent.png'))
+        # Accept cookies
         for phrase in accept_phrases:
             try:
-                page.get_by_role(
-                    "button",
-                    exact=True,
-                    name=re.compile(rf"{phrase}", re.IGNORECASE)
-                ).click(timeout=300)
+                page.click(f"button:text('{phrase}')", timeout=100)
+                print("found button")
+                # page.click(f"button:has-text('{phrase}')", timeout=100)
+                # page.get_by_role(
+                #     "button",
+                #     exact=True,
+                #     name=re.compile(rf"{phrase}", re.IGNORECASE)
+                # ).click(timeout=150)
                 break
-            except PlaywrightTimeoutError:
-                continue
+            except:
+                try:
+                    page.click(f"a:text('{phrase}')", timeout=100)
+                    print("found link")
+                    break
+                except:
+                    continue
         sleep(3)
+        # reload fonts
+        page.reload()
+        sleep(3)
+        # screenshot after accepting cookies
         page.screenshot(path=os.path.join(crawl_data_dir,file_prefix+'_post_consent.png'))
         scroll_in_multiple_steps(page)
         sleep(3)
