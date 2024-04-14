@@ -35,35 +35,51 @@ redirection (source, target) pairs. Cross-domain redirection means the source an
 of the redirection has different eTLD+1’s
 """
 
+import os
+import json
+
 import matplotlib.pyplot as plt
 import pandas as pd
 
+from har_analysis import get_har_metrics
+
+
+def get_data(folder_name):
+    print(folder_name)
+    data = {}
+    
+    # get json 
+    with open(f'{folder_name}/analysis.json', 'r') as f:
+        analysis_data = json.load(f)
+        data["failures"] = analysis_data["cookies_not_found"]
+        data["timeouts"] = analysis_data["timeouts"]
+
+    # get dicts from har files
+    data["crawls"] = []
+    for file_name in os.listdir(folder_name):
+        if file_name.endswith('.har') and "investinholland.com_allow.har" != file_name:
+            print(file_name)
+            har = f'{folder_name}/{file_name}' 
+            data['crawls'].append(get_har_metrics(har))
+
+    return data
+
+
 def get_accept_data():
-    pass
+    return get_data('crawl_data_allow')
 
 
 def get_blocked_data():
-    pass
+    return get_data('crawl_data_block')
 
 
 def get_num_timeouts_failures(accept_data, reject_data):
     # 1. Table with number of timeouts and failures in the accept and on the block crawlers.
-    accept_timeouts = 0
-    accept_failures = 0
-    block_timeouts = 0
-    block_failures = 0
 
-    for crawl in accept_data:
-        if crawl['timeouts'] > 0:
-            accept_timeouts += 1
-        if crawl['failures'] > 0:
-            accept_failures += 1
-
-    for crawl in reject_data:
-        if crawl['timeouts'] > 0:
-            block_timeouts += 1
-        if crawl['failures'] > 0:
-            block_failures += 1
+    accept_timeouts = accept_data["timeouts"]
+    accept_failures = accept_data["failures"]
+    block_timeouts = reject_data["timeouts"]
+    block_failures = reject_data["failures"]
     
     df = pd.DataFrame({
         'Crawler': ['Accept', 'Block'],
@@ -84,22 +100,23 @@ def make_num_box_plots(accept_data, blocked_data):
 
     data = {}
 
-    for crawl_data in [accept_data, blocked_data]:
+    for crawl_data, name in zip([accept_data, blocked_data],["accept", "blocked"]):
         page_load_times = []
         num_requests = []
         num_third_party_domains = []
         num_tracker_domains = []
         num_third_party_domains_same_site_none = []
 
-        for crawl in crawl_data:
+        for crawl in crawl_data["crawls"]:
             page_load_times.append(crawl['load_time'])
             num_requests.append(crawl['num_reqs'])
             num_third_party_domains.append(len(crawl['third_party_domains']))
             num_tracker_domains.append(len(crawl['tracker_cookie_domains']))
             num_third_party_domains_same_site_none.append(
-                len([domain for domain in crawl['third_party_domains'] if domain in crawl['tracker_cookie_domains']]))
+                len([domain for domain in crawl['third_party_domains'] if domain in crawl['tracker_cookie_domains']])
+            )
 
-        data[crawl_data.name] = {
+        data[name] = {
             'page_load_times': page_load_times,
             'num_requests': num_requests,
             'num_third_party_domains': num_third_party_domains,
@@ -134,6 +151,7 @@ def get_stats_from_box_plots(data):
             print(f"Median: {pd.Series(data[key][metric]).median()}")
             print(f"Max: {max(data[key][metric])}")
             print()
+
 
 if __name__ == '__main__':
     # Load the data

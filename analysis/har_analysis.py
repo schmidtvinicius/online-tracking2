@@ -73,15 +73,15 @@ def is_cross_site_tracking(cookie_string, min_lifespan_days=60):
         same_site_value = cookie['SameSite']
         # Check if the cookie is using SameSite=None
         if same_site_value.lower() == 'none':
-            if 'Max-Age' in cookie:
-                max_age_seconds = int(cookie['Max-Age'])
-            elif 'Expires' in cookie:
-                expires_string = cookie['Expires']
-                expires_datetime = datetime.strptime(expires_string, "%a, %d-%b-%Y %H:%M:%S GMT")
-                max_age_seconds = (expires_datetime - datetime.utcnow()).total_seconds()
+            # if 'Max-Age' in cookie:
+            #     max_age_seconds = int(cookie['Max-Age'])
+            # elif 'Expires' in cookie:
+            #     expires_string = cookie['Expires']
+            #     expires_datetime = datetime.strptime(expires_string, "%a, %d-%b-%Y %H:%M:%S GMT")
+            #     max_age_seconds = (expires_datetime - datetime.utcnow()).total_seconds()
 
-            if max_age_seconds >= min_lifespan_days * 24 * 60 * 60:
-                return True
+            # if max_age_seconds >= min_lifespan_days * 24 * 60 * 60:
+            return True
             
     return False
 
@@ -134,7 +134,7 @@ def get_third_party_entities(har: Dict[str, Any]) -> List[str]:
     :param har: Dictionary with the content of the HAR file
     :return: List of strings with the third-party entities
     """
-    domain_map = open_json_file('domain_map.json')
+    domain_map = open_json_file('analysis/domain_map.json')
 
     third_party_entities = set()
     for entry in har['log']['entries']:
@@ -160,7 +160,7 @@ def analyze_har(har: Dict[str, Any]) -> Dict[str, Any]:
     # num_responses_w_cookies: Integer; number of responses with a non-empty Set-Cookie header
     num_responses_w_cookies = 0
 
-    domain_map = open_json_file('domain_map.json')
+    domain_map = open_json_file('analysis/domain_map.json')
     
     requests_list = []
     for entry in har['log']['entries']:
@@ -207,9 +207,9 @@ def analyze_har(har: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def get_har_metrics(in_har_name, out_json_name) -> None:
+def get_har_metrics(in_har_name) -> None:
     results = {}
 
     har = load_har_file(in_har_name)
     results = analyze_har(har)
-    save_json_file(out_json_name, results)
+    return results
