@@ -207,7 +207,7 @@ def analyze_har(har: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def get_har_metrics(in_har_name) -> None:
+def get_har_metrics(in_har_name) -> dict:
     results = {}
 
     har = load_har_file(in_har_name)
