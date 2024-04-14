@@ -39,6 +39,7 @@ import os
 import json
 
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 
 from har_analysis import get_har_metrics
@@ -153,6 +154,57 @@ def get_stats_from_box_plots(data):
             print()
 
 
+def get_top_ten_third_party_domains(accept_data, blocked_data):
+    # 4. Add a table of ten most prevalent third-party domains (based on the number of distinct
+    # websites where the third party is present), indicating whether the domain is classified as
+    # a tracker or not by Disconnect
+
+    accept_third_party_domains = {}
+    for crawl in accept_data["crawls"]:
+        for domain in crawl['third_party_domains']:
+            if domain not in accept_third_party_domains:
+                accept_third_party_domains[domain] = 0
+            accept_third_party_domains[domain] += 1
+
+    blocked_third_party_domains = {}
+    for crawl in blocked_data["crawls"]:
+        for domain in crawl['third_party_domains']:
+            if domain not in blocked_third_party_domains:
+                blocked_third_party_domains[domain] = 0
+            blocked_third_party_domains[domain] += 1
+
+    tracker = []
+    for crawl in accept_data["crawls"]:
+        for domain in crawl['tracker_cookie_domains']:
+            if domain in accept_third_party_domains.keys():
+                tracker.append(domain)
+
+    for crawl in blocked_data["crawls"]:
+        for domain in crawl['tracker_cookie_domains']:
+            if domain in blocked_third_party_domains.keys():
+                tracker.append(domain)
+    
+    domains = np.unique(list(accept_third_party_domains.keys()) + list(blocked_third_party_domains.keys()))
+    df = pd.DataFrame({
+        'Domain': domains,
+        'Accept': [0] * len(domains),
+        "Blocked": [0] * len(domains),
+        'isTracker?': [0] * len(domains)
+    })
+
+    for domain in domains:
+        if domain in accept_third_party_domains:
+            df.loc[df['Domain'] == domain, 'Accept'] = accept_third_party_domains[domain]
+        if domain in blocked_third_party_domains:
+            df.loc[df['Domain'] == domain, 'Blocked'] = blocked_third_party_domains[domain]
+        if domain in tracker:
+            df.loc[df['Domain'] == domain, 'isTracker?'] = 1
+
+    df['sum'] = df['Accept'] + df['Blocked']
+    df = df.sort_values('sum', ascending=False)
+    df = df.drop('sum', axis=1)
+    print(df.head(10))
+
 if __name__ == '__main__':
     # Load the data
     print("Loading data...")
@@ -174,5 +226,6 @@ if __name__ == '__main__':
     # 4. Add a table of ten most prevalent third-party domains (based on the number of distinct
     # websites where the third party is present), indicating whether the domain is classified as
     # a tracker or not by Disconnect
-    # TODO
+    # print("Exercise 4...")
+    get_top_ten_third_party_domains(accept_data, blocked_data)
 
