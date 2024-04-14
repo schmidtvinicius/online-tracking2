@@ -42,7 +42,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from har_analysis import get_har_metrics
+from har_analysis_vini import get_har_metrics
+from har_find_methods import get_methods
 
 
 def get_data(folder_name):
@@ -62,6 +63,7 @@ def get_data(folder_name):
             print(file_name)
             har = f'{folder_name}/{file_name}' 
             data['crawls'].append(get_har_metrics(har))
+            data['crawls'][-1]['har_file'] = file_name
 
     return data
 
@@ -226,6 +228,37 @@ if __name__ == '__main__':
     # 4. Add a table of ten most prevalent third-party domains (based on the number of distinct
     # websites where the third party is present), indicating whether the domain is classified as
     # a tracker or not by Disconnect
-    # print("Exercise 4...")
+    print("Exercise 4...")
     get_top_ten_third_party_domains(accept_data, blocked_data)
+
+    # 5. Add a frequency table of HTTP methods (such as GET, POST, ..) for each crawl.
+    print("Exercise 5...")
+    methods = {
+        "accept": {},
+        "blocked": {}
+    }
+    for crawl_data, name, folder_name in zip(
+        [accept_data, blocked_data],
+        ["accept", "blocked"],
+        ["crawl_data_allow", "crawl_data_block"]
+    ):
+        for crawl in crawl_data["crawls"]:
+            method = get_methods(f'{folder_name}/{crawl["har_file"]}')
+            for key in method['methods']:
+                if key not in methods[name]:
+                    methods[name][key] = 0
+                methods[name][key] += method['methods'][key]
+    print(methods)
+    
+
+    # 6. Analyze the Permissions-Policy headers encountered in the crawls and make a list of
+    # websites that disable access to camera, geolocation or microphone for all parties
+    # (including first and third). In total, you should make 6 separate website lists: 2 crawls x 3
+    # permissions
+    print("Exercise 6...")
+    
+    
+
+
+
 

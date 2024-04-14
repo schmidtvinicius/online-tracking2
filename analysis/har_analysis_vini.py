@@ -3,11 +3,11 @@ import datetime
 import email.utils
 from tld import get_fld, get_tld, get_tld_names
 
-domain_name = 'zalando.nl'
-accept_har_file = domain_name+'_accept.har'
-reject_har_file = domain_name+'_reject.har'
-accept_json_file = domain_name+'_accept.json'
-reject_json_file = domain_name+'_reject.json'
+# domain_name = 'zalando.nl'
+# accept_har_file = domain_name+'_accept.har'
+# reject_har_file = domain_name+'_reject.har'
+# accept_json_file = domain_name+'_accept.json'
+# reject_json_file = domain_name+'_reject.json'
 
 def read_json_file(filepath: str) -> list[dict]:
     with open(filepath, 'r') as json_file:
@@ -15,8 +15,8 @@ def read_json_file(filepath: str) -> list[dict]:
 
 # For the HAR files, we are only interested in the `entries` array, which is what contains all request/response pairs.
 # From here every reference to an entry refers to a request/response pair 
-accept_list = read_json_file(accept_har_file)['log']['entries']
-domain_map = read_json_file('domain_map.json')
+# accept_list = read_json_file(accept_har_file)['log']['entries']
+domain_map = read_json_file('analysis/domain_map.json')
 
 def entry_has_header(entry: dict, entry_component: str, header_name: str) -> bool:
     """
@@ -125,4 +125,6 @@ def write_json_file(path: str, content: dict) -> None:
 def get_har_metrics(har_file_name: str) -> dict:
     domain_name = har_file_name.split('_')[0]
     har_contents = read_json_file(har_file_name)['log']['entries']
-    return produce_json(har_contents, domain_name) # Domain name é o nome do site
+    result_dict = produce_json(har_contents, domain_name)
+    result_dict['load_time'] = read_json_file(har_file_name)['log']['pages'][0]['pageTimings']['onLoad']
+    return  result_dict # Domain name é o nome do site
