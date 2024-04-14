@@ -15,10 +15,15 @@ def main(playwright: Playwright, options: dict) -> None:
 
     accept_phrases = read_file('accept_words.txt')
 
+    # code for analysis
+    cookies_not_found = 0
+    timeouts = 0
+
     for url in options['urls']:
         print(f'Processing {url}')
         fld = get_fld(url)
         file_prefix = fld+suffix
+
         context = browser.new_context(
             record_har_path=os.path.join(crawl_data_dir,file_prefix+'.har'),
             record_video_dir=crawl_data_dir
@@ -28,29 +33,38 @@ def main(playwright: Playwright, options: dict) -> None:
         if options['block_trackers']:
             page.route('**', lambda route, request: block_tracking_domains(route, request, get_blocked_trackers()))
 
-        page.goto(url)
+        # set timeout to load the page to 30 seconds
+        page.set_default_timeout(30000)
+        try:
+            page.goto(url)
+        except PlaywrightTimeoutError:
+            print(f'Timeout error: {url}')
+            timeouts += 1
+            page.close()
+            context.close()
+            continue
+        
         sleep(10)
         # screenshot before accepting cookies
         page.screenshot(path=os.path.join(crawl_data_dir,file_prefix+'_pre_consent.png'))
+        
         # Accept cookies
+        cookie_found = False
         for phrase in accept_phrases:
             try:
-                page.click(f"button:text('{phrase}')", timeout=100)
-                print("found button")
-                # page.click(f"button:has-text('{phrase}')", timeout=100)
-                # page.get_by_role(
-                #     "button",
-                #     exact=True,
-                #     name=re.compile(rf"{phrase}", re.IGNORECASE)
-                # ).click(timeout=150)
+                page.click(f"button:text('{phrase}')", timeout=200)
+                cookie_found = True
                 break
             except:
                 try:
-                    page.click(f"a:text('{phrase}')", timeout=100)
-                    print("found link")
+                    page.click(f"a:text('{phrase}')", timeout=200)
+                    cookie_found = True
                     break
                 except:
                     continue
+        if not cookie_found:
+            cookies_not_found += 1   
+        print(f"cookie consent clicked: {cookie_found}")
         sleep(3)
         # reload fonts
         page.reload()
@@ -66,6 +80,8 @@ def main(playwright: Playwright, options: dict) -> None:
         
     browser.close()
 
+    with open(os.path.join(crawl_data_dir,'analysis.json'), 'w') as f:
+        f.write(f'{{"cookies_not_found": {cookies_not_found}, "timeouts": {timeouts}}}')
 
 def get_blocked_trackers():
     # Read the JSON file
