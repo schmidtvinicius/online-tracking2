@@ -67,7 +67,7 @@ def main(playwright: Playwright, options: dict) -> None:
         print(f"cookie consent clicked: {cookie_found}")
         sleep(3)
         # reload fonts
-        page.reload()
+        # page.reload()
         sleep(3)
         # screenshot after accepting cookies
         page.screenshot(path=os.path.join(crawl_data_dir,file_prefix+'_post_consent.png'))
